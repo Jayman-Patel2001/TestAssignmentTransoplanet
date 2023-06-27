@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import "../styles/TextInput.css";
 import PlayCircleOutlineSharpIcon from "@mui/icons-material/PlayCircleOutlineSharp";
 
@@ -8,9 +8,9 @@ const TextInput = () => {
   const [audioURL, setAudioURL] = useState("");
   const [showPlayIcon, setShowPlayIcon] = useState(false);
 
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setTranslatedText("");
@@ -41,13 +41,15 @@ const TextInput = () => {
   };
 
   const handlePlay = () => {
-    audioRef.current.pause();
-    audioRef.current.currentTime = 0;
-    audioRef.current.src = audioURL + "?t=" + Date.now(); // Add a cache-busting parameter
-    audioRef.current.play();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current.src = audioURL + "?t=" + Date.now(); // Add a cache-busting parameter
+      audioRef.current.play();
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
   };
 
@@ -79,7 +81,7 @@ const TextInput = () => {
         {translatedText && (
           <textarea
             id="message"
-            rows="4"
+            rows={parseInt("4")}
             className="p-2.5 mb-4 md:w-1/3 w-4/5 text-sm text-white bg-gray-700 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Translated Text To Hindi..."
           >
