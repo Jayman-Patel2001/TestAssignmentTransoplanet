@@ -1,7 +1,7 @@
 **************************Conversion of Text to Audio using MERN Stack****************************************
 
 Step-1: Start the server with the following steps:
-   - First, go to the server directory located inside the TextToAudio folder.
+   - First, go to the server directory located inside the TextToAudio folder (/TextToAudio/server).
    - Run "npm install" to install the required dependencies in your local host.
    - Finally, run node/nodemon index.js
 
