@@ -5,15 +5,16 @@ import PlayCircleOutlineSharpIcon from "@mui/icons-material/PlayCircleOutlineSha
 const TextInput = () => {
   const [inputText, setInputText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
+  const [audioURL, setAudioURL] = useState("");
   const [showPlayIcon, setShowPlayIcon] = useState(false);
 
-  const audioURL = "/server/audio.mp3";
   const audioRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setTranslatedText("");
+      setAudioURL("");
       const response = await fetch("http://127.0.0.1:8000/api/translate", {
         method: "POST",
         headers: {
@@ -23,9 +24,11 @@ const TextInput = () => {
       });
 
       if (response.ok) {
-        const text = await response.json();
+        const { translatedText: text, filePath: path } = await response.json();
+        console.log(text, path);
         // console.log("Translated text:", text);
-        setTranslatedText(text.translatedText);
+        setTranslatedText(text);
+        setAudioURL(path);
         setShowPlayIcon(true);
       } else {
         console.error("Error:", response.status);
@@ -38,10 +41,10 @@ const TextInput = () => {
   };
 
   const handlePlay = () => {
-    audioRef.current.pause(); //* Pause the previous audio
-    audioRef.current.currentTime = 0; //* Reset audio playback to the beginning
-    audioRef.current.src = audioURL; //* Set the audio source to the local path
-    audioRef.current.play(); //* Play the audio
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    audioRef.current.src = audioURL + "?t=" + Date.now(); // Add a cache-busting parameter
+    audioRef.current.play();
   };
 
   const handleInputChange = (e) => {

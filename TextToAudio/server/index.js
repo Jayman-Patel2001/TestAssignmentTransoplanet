@@ -43,7 +43,7 @@ app.post("/api/translate", async (req, res) => {
     const filePath = await generateSpeechAudio(translatedText);
 
     //TODO: Sending the response
-    res.json({ translatedText });
+    res.json({ translatedText, filePath });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "An error occurred during translation." });
@@ -72,6 +72,8 @@ async function generateSpeechAudio(text) {
 
   const writeFile = util.promisify(fs.writeFile);
   await writeFile("audio.mp3", response.audioContent, "binary");
-
   console.log("Audio file has been saved!!");
+
+  const path = "/server/audio.mp3";
+  return path;
 }
