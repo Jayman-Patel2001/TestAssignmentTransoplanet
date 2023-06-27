@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../styles/TextInput.css";
 import PlayCircleOutlineSharpIcon from "@mui/icons-material/PlayCircleOutlineSharp";
 
@@ -10,13 +10,10 @@ const TextInput = () => {
   const audioURL = "/server/audio.mp3";
   const audioRef = useRef(null);
 
-  const handlePlay = () => {
-    audioRef.current.play();
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setTranslatedText("");
       const response = await fetch("http://127.0.0.1:8000/api/translate", {
         method: "POST",
         headers: {
@@ -32,7 +29,7 @@ const TextInput = () => {
         setShowPlayIcon(true);
       } else {
         console.error("Error:", response.status);
-        setTranslatedText("");
+
         setShowPlayIcon(false);
       }
     } catch (error) {
@@ -40,9 +37,17 @@ const TextInput = () => {
     }
   };
 
+  const handlePlay = () => {
+    audioRef.current.pause(); //* Pause the previous audio
+    audioRef.current.currentTime = 0; //* Reset audio playback to the beginning
+    audioRef.current.src = audioURL; //* Set the audio source to the local path
+    audioRef.current.play(); //* Play the audio
+  };
+
   const handleInputChange = (e) => {
     setInputText(e.target.value);
   };
+
   return (
     <form onSubmit={handleSubmit} method="POST">
       <div className="flex items-center justify-center h-screen flex-col">
